@@ -1,15 +1,21 @@
-import { Command, Moon, SunMedium } from "lucide-react"
+import {
+  Moon,
+  Sun,
+  Home,
+  Briefcase as Work,
+  RefreshCw as Refresh,
+  ArrowRight,
+  User as Running,
+} from "lucide-react"
 
-export type IconKeys = keyof typeof icons
-
-type IconsType = {
-  [key in IconKeys]: React.ElementType
-}
-
-const icons = {
-  logo: Command,
-  sun: SunMedium,
+export const Icons = {
+  sun: Sun,
   moon: Moon,
+  home: Home,
+  work: Work,
+  refresh: Refresh,
+  arrowRight: ArrowRight,
+  running: Running,
 }
 
-export const Icons: IconsType = icons
+export type IconsType = typeof Icons
