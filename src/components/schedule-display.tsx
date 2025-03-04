@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from "react"
 import { Schedule, Direction } from "@/types/schedule"
 import { commuteConfig } from "@/config/commute"
@@ -9,14 +11,10 @@ type ScheduleDisplayProps = {
 }
 
 export function ScheduleDisplay({ direction, schedules, lastUpdated }: ScheduleDisplayProps) {
-  const [currentTime, setCurrentTime] = useState<Date>(new Date())
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 1000)
-
-    return () => clearInterval(timer)
+    setMounted(true)
   }, [])
 
   const getRecommendedLeaveTime = (departureTime: string) => {
@@ -32,6 +30,37 @@ export function ScheduleDisplay({ direction, schedules, lastUpdated }: ScheduleD
     })
   }
 
+  // Show a loading state or skeleton during server-side rendering and initial mount
+  if (!mounted) {
+    return (
+      <div className="space-y-4 animate-pulse">
+        <div className="flex justify-between items-center">
+          <div className="h-8 w-48 bg-gray-200 rounded"></div>
+          <div className="h-4 w-32 bg-gray-200 rounded"></div>
+        </div>
+        <div className="grid gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="p-4 rounded-lg border">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <div className="h-6 w-16 bg-gray-200 rounded"></div>
+                  <div className="mt-1 h-4 w-32 bg-gray-200 rounded"></div>
+                </div>
+                <div className="text-right">
+                  <div className="h-6 w-24 bg-gray-200 rounded"></div>
+                  <div className="mt-1 h-4 w-20 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+              <div className="mt-2 pt-2 border-t">
+                <div className="h-4 w-32 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -39,7 +68,7 @@ export function ScheduleDisplay({ direction, schedules, lastUpdated }: ScheduleD
           {direction === "morning" ? "Morning Commute" : "Evening Commute"}
         </h2>
         <p className="text-sm text-muted-foreground">
-          Last updated: {new Date(lastUpdated).toLocaleTimeString()}
+          Last updated: {formatTime(new Date(lastUpdated))}
         </p>
       </div>
 
